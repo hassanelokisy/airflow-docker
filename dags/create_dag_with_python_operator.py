@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-
+from airflow.models.taskinstance import TaskInstance
 
 default_args = {
     'owner': 'coder2j',
@@ -11,7 +11,7 @@ default_args = {
 }
 
 
-def greet(some_dict, ti):
+def greet(some_dict, ti:TaskInstance):
     print("some dict: ", some_dict)
     first_name = ti.xcom_pull(task_ids='get_name', key='first_name')
     last_name = ti.xcom_pull(task_ids='get_name', key='last_name')
@@ -20,12 +20,12 @@ def greet(some_dict, ti):
           f"and I am {age} years old!")
 
 
-def get_name(ti):
+def get_name(ti:TaskInstance):
     ti.xcom_push(key='first_name', value='Jerry')
     ti.xcom_push(key='last_name', value='Fridman')
 
 
-def get_age(ti):
+def get_age(ti:TaskInstance):
     ti.xcom_push(key='age', value=19)
 
 
